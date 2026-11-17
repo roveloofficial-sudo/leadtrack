@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>LeadTrack CRM</title>
+  <meta name="description" content="LeadTrack CRM — kelola prospek, follow-up, closing, dan pengiriman dalam satu tempat.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#F2611D">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <style>
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #F3F4F6; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    @media (prefers-color-scheme: dark) { html, body, #loader { background: #0B0F19; } .tx { color: #F2F4F7; } .sub { color: #98A2B3; } }
+
+    /* Aplikasi LeadTrack (Apps Script) tampil penuh satu layar */
+    #app { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+
+    /* Loader: logo berkilau + tulisan bergelombang, tanpa latar */
+    #loader { position: fixed; inset: 0; display: grid; place-items: center; z-index: 2; background: #F3F4F6; transition: opacity .35s ease; }
+    #loader.out { opacity: 0; pointer-events: none; }
+    .ltl { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .ic { position: relative; width: 88px; height: 88px; }
+    .ic img { width: 100%; height: 100%; display: block; animation: glow 1.8s ease-in-out infinite; }
+    .shine { position: absolute; inset: 0; overflow: hidden; mix-blend-mode: screen;
+      -webkit-mask: url(logo.png) center / contain no-repeat; mask: url(logo.png) center / contain no-repeat; }
+    .shine i { position: absolute; left: -50%; top: -50%; width: 200%; height: 200%; animation: spin 1.8s linear infinite;
+      background: conic-gradient(from 0deg, transparent 0deg, transparent 290deg, rgba(255,214,120,.25) 315deg, rgba(255,250,225,1) 340deg, rgba(255,214,120,.25) 352deg, transparent 360deg); }
+    .tx { display: flex; font-size: 22px; font-weight: 800; color: #101828; line-height: 1; }
+    .tx .o { background: linear-gradient(90deg, #F59E0B, #F2611D); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .sub { display: flex; font-size: 12px; font-weight: 700; letter-spacing: .32em; text-transform: uppercase; color: #667085; margin-top: -4px; }
+    .tx span, .sub span { display: inline-block; animation: wave 1.5s ease-in-out infinite; animation-delay: calc(var(--i) * .07s); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes glow { 0%, 100% { filter: drop-shadow(0 0 0 rgba(245,158,11,0)); transform: scale(1); } 50% { filter: drop-shadow(0 0 14px rgba(245,158,11,.75)); transform: scale(1.04); } }
+    @keyframes wave { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-7px); } }
+    @media (prefers-reduced-motion: reduce) { .ic img, .shine i, .tx span, .sub span { animation: none; } }
+  </style>
+</head>
+<body>
+  <div id="loader" role="status" aria-label="Memuat LeadTrack CRM">
+    <div class="ltl">
+      <div class="ic"><img src="logo.png" alt=""><span class="shine"><i></i></span></div>
+      <div class="tx" id="tx"></div>
+      <div class="sub" id="sub"></div>
+    </div>
+  </div>
+
+  <!-- Ganti URL di bawah HANYA jika Anda membuat deployment Apps Script BARU (URL /exec berubah) -->
+  <iframe id="app" title="LeadTrack CRM" allow="clipboard-read; clipboard-write; fullscreen"
+    src="https://script.google.com/macros/s/AKfycbze1baqLmqyr-Wxx7NvzHtIJ_iyzmxp_5o0s9OHXcdI9VIV5kk_HUvNGhdimkZASGDM/exec"></iframe>
+
+  <script>
+    // Huruf bergelombang
+    function wave(el, text, start, orange) {
+      el.innerHTML = text.split('').map(function (c, i) {
+        var cls = orange && i >= orange[0] && i <= orange[1] ? ' class="o"' : '';
+        return '<span' + cls + ' style="--i:' + (start + i) + '">' + (c === ' ' ? '&nbsp;' : c) + '</span>';
+      }).join('');
+    }
+    wave(document.getElementById('tx'), 'LeadTrack CRM', 0, [4, 8]);
+    wave(document.getElementById('sub'), 'Processing...', 14);
+
+    // Sembunyikan loader begitu aplikasi selesai dimuat (maks. 15 detik)
+    var loader = document.getElementById('loader');
+    function done() { loader.classList.add('out'); setTimeout(function () { loader.remove(); }, 400); }
+    document.getElementById('app').addEventListener('load', function () { setTimeout(done, 300); });
+    setTimeout(done, 15000);
+  </script>
+</body>
+</html>
